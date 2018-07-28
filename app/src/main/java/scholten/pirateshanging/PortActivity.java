@@ -3,9 +3,15 @@ package scholten.pirateshanging;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import scholten.pirateshanging.fragments.GallowsFragment;
+import scholten.pirateshanging.fragments.HomeFragment;
+import scholten.pirateshanging.fragments.TavernFragment;
 
 public class PortActivity extends AppCompatActivity {
 
@@ -16,16 +22,26 @@ public class PortActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+            Fragment fragment = null;
+
             switch (item.getItemId()) {
                 case R.id.navigation_tavern:
-                    mTextMessage.setText(R.string.title_tavern);
-                    return true;
+                    fragment = new TavernFragment();
+                    break;
                 case R.id.navigation_gallows:
-                    mTextMessage.setText(R.string.title_gallows);
-                    return true;
+                    fragment = new GallowsFragment();
+                    break;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
+                    fragment = new HomeFragment();
+                    break;
+            }
+
+            if (fragment != null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.fragment_container, fragment);
+                ft.commit();
+                return true;
             }
             return false;
         }
@@ -36,8 +52,13 @@ public class PortActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_port);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
+        // Define which fragment to start when activity is called
+        Fragment fragment = new HomeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        // And remember to select the correct bottom menu item here
+        navigation.setSelectedItemId(R.id.navigation_notifications);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
