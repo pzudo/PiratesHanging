@@ -1,5 +1,6 @@
 package scholten.pirateshanging;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import scholten.pirateshanging.hangman.Gamelogic;
@@ -7,7 +8,7 @@ import scholten.pirateshanging.hangman.Gamelogic;
 public class HangmanTest {
 
     @Test
-    public void integrationUnitTest(){
+    public void integrationUnitTest() {
         Gamelogic test = new Gamelogic();
 
         test.reset();
@@ -15,7 +16,7 @@ public class HangmanTest {
 
         String word = test.getWord();
 
-        while (!test.isWon()){
+        while (!test.isWon()) {
             for (int i = 0; i < word.length(); i++) {
                 String letter = word.substring(i, i + 1);
                 test.check(letter);
@@ -24,6 +25,8 @@ public class HangmanTest {
 
         test.status();
 
-    }
+        Assert.assertEquals(true, test.isWon());
 
+    }
 }
+

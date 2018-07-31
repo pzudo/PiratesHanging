@@ -10,15 +10,95 @@ public class Gamelogic {
     private String visible;
     private int wrongs;
     private long time;
-    private boolean isCorrect;
-    private boolean isWon;
-    private boolean isLost;
+    private boolean correct;
+    private boolean won;
+    private boolean lost;
+    private boolean gameover;
 
     public Gamelogic() {
         words.add("Blackbeard");
         words.add("Kraken");
-        words.add("Jack Sparrow");
         reset();
+    }
+
+    public void reset() {
+        usedLetters.clear();
+        setWrongs(0);
+        setWon(false);
+        setLost(false);
+        setWord(words.get(new Random().nextInt(words.size())));
+        updateVisible();
+    }
+
+    public void updateVisible(){
+        setVisible("");
+        setWon(true);
+
+        for (int i = 0; i < word.length(); i++){
+            String letter = word.substring(i, i + 1);
+
+            if (usedLetters.contains(letter)){
+                setVisible(visible + letter);
+            }
+            else {
+                setVisible(visible + "*");
+                setWon(false);
+            }
+
+        }
+    }
+
+    public void check(String letter){
+        if (letter.length() != 1) {
+            return;
+        }
+
+        System.out.println("guessing: " + letter);
+
+        if (usedLetters.contains(letter)) {
+            return;
+        }
+        if (gameover) {
+            return;
+        }
+
+        usedLetters.add(letter);
+
+        if (word.contains(letter)) {
+            setCorrect(true);
+            System.out.println(letter + " was correct");
+        }
+        else {
+            setCorrect(false);
+            System.out.println(letter + " was incorrect");
+            setWrongs(wrongs + 1);
+
+            if (wrongs > 5) {
+                setLost(true);
+                System.out.println("game lost");
+            }
+
+        }
+
+        updateVisible();
+    }
+
+    public void status(){
+        System.out.println("<-- status -->");
+
+        if (lost) {
+            System.out.println("Lost");
+        }
+        if (won) {
+            System.out.println("Won");
+        }
+
+        System.out.println("[status] word -> " + word);
+        System.out.println("[status] visible -> " + visible);
+        System.out.println("[status] wrongs -> " + wrongs);
+        System.out.println("[status] used letter -> " + usedLetters);
+
+        System.out.println("<-- status -->");
     }
 
     public ArrayList<String> getWords() {
@@ -70,116 +150,38 @@ public class Gamelogic {
     }
 
     public boolean isCorrect() {
-        return isCorrect;
+        return correct;
     }
 
     public void setCorrect(boolean correct) {
-        isCorrect = correct;
+        this.correct = correct;
     }
 
     public boolean isWon() {
-        return isWon;
+        return won;
     }
 
     public void setWon(boolean won) {
-        isWon = won;
+        this.won = won;
     }
 
     public boolean isLost() {
-        return isLost;
+        return lost;
     }
 
     public void setLost(boolean lost) {
-        isLost = lost;
+        this.lost = lost;
     }
 
-    public void reset() {
-        usedLetters.clear();
-        setWrongs(0);
-        setWon(false);
-        setLost(false);
-        setWord(words.get(new Random().nextInt(words.size())));
-        updateVisible();
-        setTime(System.currentTimeMillis());
+    public boolean isGameover() {
+        return lost||won;
     }
 
-    public void updateVisible(){
-        setVisible("");
-        setWon(true);
-
-        for (int i = 0; i < word.length(); i++){
-            String letter = word.substring(i, i + 1);
-
-            if (usedLetters.contains(letter)){
-                setVisible(visible + letter);
-            }
-            else {
-                setVisible(visible + "*");
-                setWon(false);
-            }
-
-        }
+    public void setGameover(boolean gameover) {
+        this.gameover = gameover;
     }
 
-    public void check(String letter){
-        if (letter.length() != 1) {
-            return;
-        }
 
-        System.out.println("guessing: " + letter);
-
-        if (usedLetters.contains(letter)) {
-            return;
-        }
-        if (isWon || isLost) {
-            return;
-        }
-
-        usedLetters.add(letter);
-
-        if (word.contains(letter)) {
-            setCorrect(true);
-            System.out.println(letter + " was correct");
-        }
-        else {
-            setCorrect(false);
-            System.out.println(letter + " was incorrect");
-            setWrongs(wrongs + 1);
-
-            if (wrongs > 5) {
-                setLost(true);
-                System.out.println("game lost");
-            }
-
-        }
-
-        updateVisible();
-
-    }
-
-    public void status(){
-        long currentTime = (time - System.currentTimeMillis()/10);
-
-        System.out.println("<-- status -->");
-
-        if (isLost) {
-            System.out.println("Lost");
-            System.out.println("[status] time -> " + currentTime);
-        }
-        if (isWon) {
-            System.out.println("Won");
-            System.out.println("[status] time ->" + currentTime);
-        }
-
-        System.out.println("[status] word -> " + word);
-        System.out.println("[status] visible -> " + visible);
-        System.out.println("[status] wrongs -> " + wrongs);
-        System.out.println("[status] used letter -> " + usedLetters);
-
-        System.out.println("<-- status -->");
-
-
-    }
 
 
 
